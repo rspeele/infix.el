@@ -397,14 +397,35 @@ braces) of the infix expression."
   "Declare SYMBOL as a flat infix operator with precedence PREC."
   `(infix ,prec ,symbol t))
 
-;; Finally, declare a standard set of infix operators.
-
 ;; I have left a gap of 256 between each level of precedence in the
 ;; standard operators. If you want to define a new operator with a
 ;; precedence between that of two existing operators, I recommend
 ;; using the exact halfway point. This leaves room for extension and
 ;; will work well with other custom operators defined using the same
 ;; approach.
+
+;; For this purpose, the macros `precedence' and `precedence-between'
+;; may be useful.
+
+(defun infix-precedence-of (symbol)
+  "Return the predence of operator SYMBOL."
+  (infix-precedence (infix-get symbol)))
+
+(defmacro precedence (symbol)
+  `(infix-precedence-of ',symbol))
+
+(defun infix-precedence-between (a b)
+  "Return an operator precedence between that of symbols A and B."
+  (let ((p1 (infix-precedence-of a))
+        (p2 (infix-precedence-of b)))
+    (let ((low (min p1 p2))
+          (high (max p1 p2)))
+      (+ low (/ (- high low) 2)))))
+
+(defmacro precedence-between (a b)
+  `(infix-precedence-between ',a ',b))
+
+;; Finally, declare the standard set of infix operators.
 
 (defun <| (function argument)
   "Apply FUNCTION to a single ARGUMENT."
