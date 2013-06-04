@@ -51,7 +51,7 @@ instead of `infixr` and `infixl`, respectively.
         (infixrf (precedence-between + *) @)
         ;; ($ 1 @ 2 @ 3) now becomes (@ 1 2 3) instead of (@ 1 (@ 2 3))
 
-For further details, consult the docstrings for and `$`, `$:`, or read
+For further details, consult the docstrings for `$` and `$:`, or read
 the comment blocks in the source.
 
 Enjoy.
