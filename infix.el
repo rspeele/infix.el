@@ -331,22 +331,40 @@ No curly braces supported."
 ;; expression go through a deglobbing stage which splits glob
 ;; symbols into their constituent tokens, then re-reads those.
 
-;; The rules for doing this are very simple. A given input symbol
+;; The rules for doing this are fairly simple. A given input symbol
 ;; produces an output token for each:
 
 ;; a. {
 ;; b. }
-;; c. Consecutive series of alphanumeric characters, #, ., or _
-;; d. Consecutive series of characters not in the above
+;; c. Identifier, meaning:
+;;        begins with alpha or _
+;;        may contain alpha, digit, ., _, or - in the middle
+;;        ends with alpha, digit, ., or _
+;; d. Literal, meaning:
+;;        begins with . or digit
+;;        may be followed by any amount of alpha, digit, ., or _
+;; e. Operator, meaning:
+;;        consecutive series of nonalphanumeric
+;;        characters except ., _, {, or }
 
 (defun infix-split-symbol-name (name)
   "Split NAME, a string, into its constituent parts.
 
 Returns a list of the tokens from NAME passed through the elisp reader."
   (when (and name (not (equal "" name)))
-    (let* ((idx
-            (string-match
-             "^\\([}{]\\|[_.#[:alnum:]]+\\|[^_.#[:alnum:]}{]+\\)" name))
+    (let* ((partreg
+            (concat
+             "^\\("
+             (mapconcat
+              'identity
+              '("[}{]"
+                "[_[:alpha:]]\\(?:[-_.[:alnum:]]*[_.[:alnum:]]\\)?"
+                "[.[:digit:]][_.[:alnum:]]*"
+                "[^_.[:alnum:]}{]+")
+              "\\|")
+             "\\)"))
+           (idx
+            (string-match partreg name))
            (part (match-string-no-properties 1 name)))
       (cons (read part)
             (infix-split-symbol-name
