@@ -1,7 +1,6 @@
-infix.el
-========
+# infix.el
 
-Infix operators for Emacs Lisp
+## Infix operators for Emacs Lisp
 
 This library provides a macro, `$`, which rewrites expressions written
 in infix notation (with operators between their operands) to
@@ -18,7 +17,30 @@ Because the translation from infix notation happens during macro
 expansion, it can be expected to have no performance penalty on
 byte-compiled code, compared to writing the S-expression manually.
 
-Additionally, there is no need to worry about expressions like:
+## Plays nicely with s-exprs
+
+The `$` macro _only rearranges the top-level terms it is applied to_.
+Nested s-expressions are left alone, so you can do stuff like:
+
+        ($ 1 + (read "2"))
+
+This makes using normal elisp code within an infix expression very simple.
+However, it might be confusing if you want to use parentheses the way they'd
+be used in infix expressions in other languages: to override the default
+order of operations. For example, consider the expression `(1+2)*3`.
+For that you have two options:
+        
+Either use curly braces for grouping nested infix expressions:
+
+        ($ {1 + 2} * 3)
+        
+Or just use the `$` macro again in a nested s-expression:
+
+        ($ ($ 1 + 2) * 3)
+
+## Generates efficient elisp
+
+There is no need to worry about expressions like:
 
         ($ a + b + c + x + y + z)
 
@@ -30,6 +52,8 @@ infix.el knows that some operators, like `+`, can have nested calls
 simplified and will generate the desired expression:
 
         (+ a b c x y z)
+        
+## Lets you define your own operators
 
 Finally, macros are also provided for declaring your own infix
 operators with custom associativity and precedence.
