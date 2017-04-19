@@ -26,8 +26,8 @@ breaks this out and re-parses it as `1 + 2` before translating it
 to `(+ 1 2)`.
 
 If you don't want this behavior (which can admittedly be confusing
-in the presence of variables `named-like-this`), you can use the `$:`
-macro instead, which does not do any mangling of symbols.
+when it treats variables `named-like-this` as subtraction), you can
+use the `$:` macro instead, which does not do any mangling of symbols.
 
 ## Plays nicely with s-exprs
 
