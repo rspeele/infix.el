@@ -19,15 +19,22 @@ byte-compiled code, compared to writing the S-expression manually.
 
 ## Doesn't require spaces
 
-Elisp parses `1+2` as a symbol, strange though it is.
-Normally you can actually use this like any other symbol, for example
-assigning it a value with `(setq 1+2 0)`. The `$` macro automatically
-breaks this out and re-parses it as `1 + 2` before translating it
-to `(+ 1 2)`.
+Elisp is very liberal in what it considers a "symbol" (variable name). It parses
+`1+2` as a symbol, strange though it is. You can actually use this like any
+other symbol, for example assigning it a value with `(setq 1+2 37)`. The `$`
+macro automatically works around this wacky feature, breaking the symbol out
+into the separate terms `1 + 2` before translating it to `(+ 1 2)`. This process
+is called "deglobbing".
 
-If you don't want this behavior (which can admittedly be confusing
-when it treats variables `named-like-this` as subtraction), you can
-use the `$:` macro instead, which does not do any mangling of symbols.
+This behavior can admittedly be confusing in the presence of variables
+`named-like-this`. Because such variable names are idiomatic in Lisp, they are
+special-cased by the deglobber and NOT treated as subtraction unless you use
+spaces. That is, `($ a+b)` expands to `(+ a b)`, and `($ a - b)` expands to
+`(- a b)`, but `($ a-b)` expands to `a-b`.
+
+If you want to keep it simple at the expense of requiring spaces around every
+operator, you can use the `$:` macro instead, which does not do any mangling of
+symbols.
 
 ## Plays nicely with s-exprs
 
