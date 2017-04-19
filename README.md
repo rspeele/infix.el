@@ -17,6 +17,18 @@ Because the translation from infix notation happens during macro
 expansion, it can be expected to have no performance penalty on
 byte-compiled code, compared to writing the S-expression manually.
 
+## Doesn't require spaces
+
+Elisp parses `1+2` as a symbol, strange though it is.
+Normally you can actually use this like any other symbol, for example
+assigning it a value with `(setq 1+2 0)`. The `$` macro automatically
+breaks this out and re-parses it as `1 + 2` before translating it
+to `(+ 1 2)`.
+
+If you don't want this behavior (which can admittedly be confusing
+in the presence of variables `named-like-this`), you can use the `$:`
+macro instead, which does not do any mangling of symbols.
+
 ## Plays nicely with s-exprs
 
 The `$` macro _only rearranges the top-level terms it is applied to_.
