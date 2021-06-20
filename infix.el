@@ -394,6 +394,7 @@ Returns a list of the tokens from NAME passed through the elisp reader."
 ;; variable and operator names at the expense of requiring whitespace
 ;; between each term.
 
+;;;###autoload
 (defmacro $ (&rest terms)
   "Rewrite the infix expression TERMS into an S-expression.
 
@@ -409,6 +410,7 @@ See `infix', `infixf', `infixl', `infixlf', `infixr', `infixrf'
 for declaring custom operators."
   (infix-expand-1 (infix-subexpr (infix-split-terms terms))))
 
+;;;###autoload
 (defmacro $: (&rest terms)
   "Rewrite the infix expression TERMS into an S-expression.
 
